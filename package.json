@@ -1,0 +1,16 @@
+{
+  "name": "adapt-authoring-api",
+  "version": "0.0.1",
+  "description": "Abstract module for creating APIs",
+  "homepage": "https://github.com/taylortom/adapt-authoring-api",
+  "main": "index.js",
+  "adapt_authoring": {
+    "documentation": {
+      "enable": true,
+      "includes": {
+        "source": "lib/*",
+        "docs": "docs/*"
+      }
+    }
+  }
+}

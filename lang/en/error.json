@@ -1,5 +1,10 @@
 {
   "addschema": "Failed to add API schema",
   "undefinedproperty": "Property '%{prop}' must be defined",
-  "route": "API error from route '%{url}'"
+  "route": "API error from route '%{url}'",
+  "notype": "Type must be specified",
+  "notobject": "def must return object, not %{def}",
+  "noname": "must specify name in def",
+  "noroutes": "must specify routes in def",
+  "nomodel": "must specify database model in def"
 }

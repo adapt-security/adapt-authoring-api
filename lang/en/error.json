@@ -1,0 +1,5 @@
+{
+  "addschema": "Failed to add API schema",
+  "undefinedproperty": "Property '%{prop}' must be defined",
+  "route": "API error from route '%{url}'"
+}

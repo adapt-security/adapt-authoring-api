@@ -7,5 +7,5 @@
   "noname": "must specify name in def",
   "noroutes": "must specify routes in def",
   "nomodel": "must specify database model in def",
-  "notfound": "Requested %{type} wasn't found"
+  "itemnotfound": "Requested %{type} wasn't found"
 }

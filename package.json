@@ -13,7 +13,7 @@
       }
     }
   },
-  "dependencies": {
+  "peerDependencies": {
     "adapt-authoring-core": "git+https://github.com/taylortom/adapt-authoring-core.git"
   }
 }

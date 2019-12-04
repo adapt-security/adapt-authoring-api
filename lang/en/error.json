@@ -8,7 +8,7 @@
   "nodbfunc": "no matching database function for '%{method}'",
   "noname": "must specify name in def",
   "noroutes": "must specify routes in def",
-  "nomodel": "must specify database model in def",
+  "noschema": "must specify database schema in def",
   "itemnotfound": "Requested %{type} wasn't found",
   "invalidschemadef": "Invalid schema def",
   "dbfail": "Data operation failed"

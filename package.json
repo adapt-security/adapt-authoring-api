@@ -4,15 +4,6 @@
   "description": "Abstract module for creating APIs",
   "homepage": "https://github.com/taylortom/adapt-authoring-api",
   "main": "index.js",
-  "adapt_authoring": {
-    "documentation": {
-      "enable": true,
-      "includes": {
-        "source": "lib/*",
-        "docs": "docs/*"
-      }
-    }
-  },
   "peerDependencies": {
     "adapt-authoring-core": "github:adapt-security/adapt-authoring-core"
   }

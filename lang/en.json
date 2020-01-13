@@ -6,10 +6,9 @@
   "error.notobject": "def must return object, not %{def}",
   "error.defnotoverridden": "def should be overridden in subclasses",
   "error.nodbfunc": "no matching database function for '%{method}'",
-  "error.noname": "must specify name in def",
-  "error.noroutes": "must specify routes in def",
-  "error.noschema": "must specify database schema in def",
+  "error.noname": "must define API name",
+  "error.noroutes": "must define API routes",
+  "error.noschema": "must define API database schema",
   "error.itemnotfound": "Requested %{type} wasn't found",
-  "error.invalidschemadef": "Invalid schema def",
   "error.dbfail": "Data operation failed"
 }

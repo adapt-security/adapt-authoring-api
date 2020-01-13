@@ -3,8 +3,6 @@
   "error.undefinedproperty": "Property '%{prop}' must be defined",
   "error.route": "API error from route '%{url}'",
   "error.noreqtype": "request must define type",
-  "error.notobject": "def must return object, not %{def}",
-  "error.defnotoverridden": "def should be overridden in subclasses",
   "error.nodbfunc": "no matching database function for '%{method}'",
   "error.noname": "must define API name",
   "error.noroutes": "must define API routes",

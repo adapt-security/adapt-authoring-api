@@ -4,7 +4,7 @@
   "error.route": "API error from route '%{url}'",
   "error.noreqtype": "request must define type",
   "error.nodbfunc": "no matching database function for '%{method}'",
-  "error.noname": "must define API name",
+  "error.norootorrouter": "must define API root URL or create a router instance",
   "error.noroutes": "must define API routes",
   "error.noschema": "must define API database schema",
   "error.itemnotfound": "Requested %{type} wasn't found",

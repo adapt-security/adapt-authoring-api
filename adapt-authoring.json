@@ -1,10 +1,6 @@
 {
   "module": false,
   "documentation": {
-    "enable": true,
-    "includes": {
-      "source": "lib/*",
-      "docs": "docs/*"
-    }
+    "enable": true
   }
 }

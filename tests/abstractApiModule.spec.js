@@ -2,7 +2,7 @@ const { App } = require('adapt-authoring-core');
 const should = require('should');
 const TestApiModule = require('./data/testApiModule');
 
-describe('API module', function() {
+describe('Abstract API module', function() {
   before(function(done) {
     const loadModule = (mod, done) => {
       const m = this.app.getModule(mod);

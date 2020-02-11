@@ -1,4 +1,4 @@
-const APIModule = require('../../lib/module');
+const AbstractAPIModule = require('../../lib/abstractApiModule');
 
 const TestSchema = {
   name: 'test',
@@ -9,7 +9,7 @@ const TestSchema = {
   }
 };
 
-class TestApiModule extends APIModule {
+class TestApiModule extends AbstractAPIModule {
   static get def() {
     return {
       name: 'test',

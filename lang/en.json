@@ -8,7 +8,7 @@
   "error.noroutes": "must define API routes",
   "error.noschema": "must define API database schema",
   "error.nocollection": "must define API database collection",
-  "error.itemnotfound": "Requested %{type} wasn't found",
+  "error.itemnotfound": "Requested item wasn't found",
   "error.dbfail": "Data operation failed",
   "error.methodnotsupported": "method '%{method}' not supported by API"
 }

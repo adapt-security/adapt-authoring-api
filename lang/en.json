@@ -10,5 +10,6 @@
   "error.nocollection": "must define API database collection",
   "error.itemnotfound": "Requested item wasn't found",
   "error.dbfail": "Data operation failed",
-  "error.methodnotsupported": "method '%{method}' not supported by API"
+  "error.methodnotsupported": "method '%{method}' not supported by API",
+  "error.duplicateroute": "duplicate route defined for path '%{path}', first definition will be used"
 }

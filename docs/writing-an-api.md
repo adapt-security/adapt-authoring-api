@@ -1,3 +1,5 @@
+# Writing an API
+
 _**Note:** before using this functionality, it is worth having an understanding of how to write basic custom modules first. See [this page](`adapt-authoring-api` module) for more._
 
 The `adapt-authoring-api` module makes defining custom APIs simple by providing abstract classes and utilities you can use in your own modules to replace the common boilerplate code required when writing an API.

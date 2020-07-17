@@ -11,6 +11,6 @@
     "adapt-authoring-mongodb": "github:adapt-security/adapt-authoring-mongodb"
   },
   "dependencies": {
-    "lodash": "4.17.15"
+    "lodash": "4.17.19"
   }
 }

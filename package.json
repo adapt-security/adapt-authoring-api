@@ -2,7 +2,9 @@
   "name": "adapt-authoring-api",
   "version": "0.0.1",
   "description": "Abstract module for creating APIs",
-  "homepage": "https://github.com/taylortom/adapt-authoring-api",
+  "homepage": "https://github.com/adaptlearning/adapt-authoring-api",
+  "license": "GPL-3.0",
+  "repository": "github:adaptlearning/adapt-authoring",
   "main": "index.js",
   "peerDependencies": {
     "adapt-authoring-auth": "github:adapt-security/adapt-authoring-auth",

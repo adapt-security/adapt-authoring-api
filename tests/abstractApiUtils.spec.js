@@ -1,6 +1,6 @@
 const should = require('should');
 
-describe('Abstract API module', function() {
+describe('Abstract API utilities', function() {
   describe('#callDbFunction()', function() {
     it('should fail if request parameter doesn\'t specify a type', function() {
       false.should.be.true();

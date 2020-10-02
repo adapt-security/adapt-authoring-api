@@ -1,1 +1,1 @@
-module.exports = require('./lib/abstractApiModule');
+module.exports = require('./lib/AbstractApiModule');

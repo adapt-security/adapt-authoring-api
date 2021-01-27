@@ -4,13 +4,13 @@
   "description": "Abstract module for creating APIs",
   "homepage": "https://github.com/adaptlearning/adapt-authoring-api",
   "license": "GPL-3.0",
-  "repository": "github:adaptlearning/adapt-authoring",
+  "repository": "adaptlearning/adapt-authoring",
   "main": "index.js",
   "peerDependencies": {
-    "adapt-authoring-auth": "github:adapt-security/adapt-authoring-auth",
-    "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
-    "adapt-authoring-jsonschema": "github:adapt-security/adapt-authoring-jsonschema",
-    "adapt-authoring-mongodb": "github:adapt-security/adapt-authoring-mongodb"
+    "adapt-authoring-auth": "adapt-security/adapt-authoring-auth",
+    "adapt-authoring-core": "adapt-security/adapt-authoring-core",
+    "adapt-authoring-jsonschema": "adapt-security/adapt-authoring-jsonschema",
+    "adapt-authoring-mongodb": "adapt-security/adapt-authoring-mongodb"
   },
   "dependencies": {
     "lodash": "^4.17.20"

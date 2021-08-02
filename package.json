@@ -13,6 +13,6 @@
     "adapt-authoring-mongodb": "adapt-security/adapt-authoring-mongodb"
   },
   "dependencies": {
-    "lodash": "^4.17.20"
+    "lodash": "^4.17.21"
   }
 }

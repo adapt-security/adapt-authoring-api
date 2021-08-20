@@ -1,6 +1,9 @@
 {
   "module": false,
   "documentation": {
-    "enable": true
+    "enable": true,
+    "manualSections": {
+      "writing-an-api.md": "basics"
+    }
   }
 }

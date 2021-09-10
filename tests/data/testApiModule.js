@@ -1,4 +1,4 @@
-const AbstractAPIModule = require('../../lib/abstractApiModule');
+const AbstractAPIModule = require('../../lib/AbstractApiModule');
 
 const TestSchema = {
   name: 'test',

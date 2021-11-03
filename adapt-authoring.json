@@ -2,7 +2,7 @@
   "module": false,
   "documentation": {
     "enable": true,
-    "manualSections": {
+    "manualPages": {
       "writing-an-api.md": "basics"
     }
   }

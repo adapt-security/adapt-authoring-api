@@ -4,6 +4,7 @@
   "description": "Abstract module for creating APIs",
   "homepage": "https://github.com/adaptlearning/adapt-authoring-api",
   "license": "GPL-3.0",
+  "type": "module",
   "main": "index.js",
   "repository": "adaptlearning/adapt-authoring",
   "dependencies": {

@@ -1,1 +1,1 @@
-export { default } from './lib/AbstractApiModule';
+export { default } from './lib/AbstractApiModule.js';

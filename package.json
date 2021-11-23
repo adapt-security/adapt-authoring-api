@@ -11,9 +11,9 @@
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
-    "adapt-authoring-auth": "adapt-security/adapt-authoring-auth",
-    "adapt-authoring-core": "adapt-security/adapt-authoring-core",
-    "adapt-authoring-jsonschema": "adapt-security/adapt-authoring-jsonschema",
-    "adapt-authoring-mongodb": "adapt-security/adapt-authoring-mongodb"
+    "adapt-authoring-auth": "github:adapt-security/adapt-authoring-auth",
+    "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
+    "adapt-authoring-jsonschema": "github:adapt-security/adapt-authoring-jsonschema",
+    "adapt-authoring-mongodb": "github:adapt-security/adapt-authoring-mongodb"
   }
 }

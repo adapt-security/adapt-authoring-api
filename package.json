@@ -6,7 +6,7 @@
   "license": "GPL-3.0",
   "type": "module",
   "main": "index.js",
-  "repository": "adaptlearning/adapt-authoring-api",
+  "repository": "github:adaptlearning/adapt-authoring-api",
   "dependencies": {
     "lodash": "^4.17.21"
   },

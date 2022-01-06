@@ -1,4 +1,11 @@
 {
+  "API_MODULE_INVALID_CLASS": {
+    "data": {
+      "name": "Name of the module"
+    },
+    "description": "Module does not extend AbstractApiModule",
+    "statusCode": 500
+  },
   "HTTP_METHOD_NOT_SUPPORTED": {
     "data": {
       "method": "The invalid HTTP method"

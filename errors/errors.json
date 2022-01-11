@@ -17,7 +17,7 @@
     "description": "module is missing a collection name",
     "statusCode": 500
   },
-  "NO_ROOT_ROUTER_DEF": {
+  "NO_ROOT_OR_ROUTER_DEF": {
     "description": "module is missing both a root and router definition",
     "statusCode": 500
   },

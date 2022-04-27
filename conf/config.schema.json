@@ -5,12 +5,12 @@
     "defaultPageSize": {
       "type": "number",
       "description": "Default size of page",
-      "default": 25
+      "default": 100
     },
     "maxPageSize": {
       "type": "number",
       "description": "Maximum page size",
-      "default": 100
+      "default": 250
     }
   }
 }

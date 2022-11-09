@@ -3,13 +3,13 @@
   "type": "object",
   "properties": {
     "defaultPageSize": {
-      "type": "number",
       "description": "Default size of page",
+      "type": "number",
       "default": 100
     },
     "maxPageSize": {
-      "type": "number",
       "description": "Maximum page size",
+      "type": "number",
       "default": 250
     }
   }

@@ -2,6 +2,12 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
+    "defaultCacheLifespan": {
+      "description": "Default lifespan of data cache",
+      "type": "string",
+      "isTimeMs": true,
+      "default": "5s"
+    },
     "defaultPageSize": {
       "description": "Default size of page",
       "type": "number",

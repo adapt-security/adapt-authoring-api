@@ -1,5 +1,5 @@
 /** 
  * Abstract API utilities
- * @module api
+ * @namespace api
  */
 export { default } from './lib/AbstractApiModule.js';

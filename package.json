@@ -2,11 +2,11 @@
   "name": "adapt-authoring-api",
   "version": "0.0.1",
   "description": "Abstract module for creating APIs",
-  "homepage": "https://github.com/adaptlearning/adapt-authoring-api",
+  "homepage": "https://github.com/adapt-security/adapt-authoring-api",
   "license": "GPL-3.0",
   "type": "module",
   "main": "index.js",
-  "repository": "github:adaptlearning/adapt-authoring-api",
+  "repository": "github:adapt-security/adapt-authoring-api",
   "dependencies": {
     "lodash": "^4.17.21"
   },

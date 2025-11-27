@@ -28,5 +28,14 @@
   "NO_SCHEMA_DEF": {
     "description": "No json schema has been defined",
     "statusCode": 404
+  },
+  "TOO_MANY_RESULTS": {
+    "data": {
+      "actual": "Number of actual results",
+      "expected": "Number of expected results",
+      "query": "The query"
+    },
+    "description": "Too many results were returned",
+    "statusCode": 500
   }
 }

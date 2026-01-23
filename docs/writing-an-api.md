@@ -446,10 +446,8 @@ Common errors from the API module:
 
 ## Writing documentation
 
-If you plan on making your module available to others, it is vital that you provide good quality documentation to explain how it works. The Adapt authoring tool documentation covers three areas: 
+If you plan on making your module available to others, it is vital that you provide good quality documentation to explain how it works. The Adapt authoring tool documentation covers three areas: the code, the REST API, and custom user manual pages. See the links below for more information on each:
 
-- Automatically generated JSDoc code documentation
-- OpenAPI REST documentation
-- Custom markdown manual pages
-
-For more information about writing documentation for your module, [see this guide](writing-documentation).
+- [JSDoc style guide](jsdoc-guide)
+- [API documentation guide](rest-api-guide)
+- [Developer manual](writing-documentation?id=developer-manual)

@@ -3,7 +3,7 @@
   "documentation": {
     "enable": true,
     "manualPages": {
-      "writing-an-api.md": "basics"
+      "writing-an-api.md": "development"
     }
   }
 }

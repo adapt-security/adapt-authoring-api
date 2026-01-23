@@ -19,7 +19,7 @@ By extending `AbstractApiModule`, your module automatically gets:
 - [Quick start](#quick-start)
 - [Module configuration](#module-configuration)
 - [Custom routes](#custom-routes)
-- [Writing request handlers](#writing-request-handlers)
+- [Requests](#requests)
 - [Database operations](#database-operations)
 - [Hooks](#hooks)
 - [Overriding methods](#overriding-methods)
@@ -239,7 +239,48 @@ You can add middleware to specific routes by passing an array of handlers:
 }
 ```
 
-## Writing request handlers
+## Requests
+
+### How requests are handled
+
+When using the default route configuration, `AbstractApiModule` provides two built-in handlers:
+
+#### requestHandler 
+Handles standard CRUD operations (POST, GET, PUT, PATCH, DELETE). It automatically:
+1. Invokes the `requestHook` for any pre-processing
+2. Checks access permissions (before the operation for PUT/PATCH/DELETE, after for GET)
+3. Calls the appropriate database method based on the HTTP method
+4. Sanitises the response data to remove internal fields
+5. Returns the result with the appropriate status code (201 for POST, 200 for GET/PUT/PATCH, 204 for DELETE)
+
+#### queryHandler 
+Handles advanced queries via POST to `/query`. It supports:
+1. MongoDB query operators in the request body (e.g., `$or`, `$gt`, `$regex`)
+2. Pagination via `page` and `limit` query parameters
+3. Sorting via a `sort` query parameter (e.g., `{"createdAt": -1}`)
+4. Skipping results via a `skip` query parameter
+
+#### Pagination
+
+When querying collections, the response includes pagination headers:
+
+| Header | Description |
+| ------ | ----------- |
+| `X-Adapt-Page` | Current page number |
+| `X-Adapt-PageSize` | Number of items per page |
+| `X-Adapt-PageTotal` | Total number of pages |
+| `Link` | Navigation links (first, prev, next, last) |
+
+Configure default pagination in `adapt-authoring-api` config:
+
+```json
+{
+  "defaultPageSize": 100,
+  "maxPageSize": 250
+}
+```
+
+### Writing request handlers
 
 ### Handler signature
 

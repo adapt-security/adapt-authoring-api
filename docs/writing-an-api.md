@@ -282,8 +282,6 @@ Configure default pagination in `adapt-authoring-api` config:
 
 ### Writing request handlers
 
-### Handler signature
-
 Request handlers follow the Express middleware pattern:
 
 ```javascript

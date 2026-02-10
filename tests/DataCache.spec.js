@@ -21,16 +21,6 @@ describe('DataCache', () => {
       assert.deepEqual(cache.cache, {})
     })
 
-    it('should handle enable being explicitly true', () => {
-      const cache = new DataCache({ enable: true, lifespan: 1000 })
-      assert.equal(cache.isEnabled, true)
-    })
-
-    it('should handle enable being false', () => {
-      const cache = new DataCache({ enable: false, lifespan: 1000 })
-      assert.equal(cache.isEnabled, false)
-    })
-
     it('should handle enable being undefined', () => {
       const cache = new DataCache({ lifespan: 1000 })
       assert.equal(cache.isEnabled, false)

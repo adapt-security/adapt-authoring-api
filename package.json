@@ -7,6 +7,9 @@
   "type": "module",
   "main": "index.js",
   "repository": "github:adapt-security/adapt-authoring-api",
+  "scripts": {
+    "test": "node --test tests/*.spec.js"
+  },
   "dependencies": {
     "lodash": "^4.17.21"
   },

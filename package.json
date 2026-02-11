@@ -11,10 +11,24 @@
     "lodash": "^4.17.21"
   },
   "peerDependencies": {
-    "adapt-authoring-auth": "github:adapt-security/adapt-authoring-auth",
-    "adapt-authoring-core": "github:adapt-security/adapt-authoring-core",
-    "adapt-authoring-jsonschema": "github:adapt-security/adapt-authoring-jsonschema",
-    "adapt-authoring-mongodb": "github:adapt-security/adapt-authoring-mongodb"
+    "adapt-authoring-auth": "^1.0.3",
+    "adapt-authoring-jsonschema": "^1.1.5",
+    "adapt-authoring-mongodb": "^1.1.2",
+    "adapt-authoring-server": "^1.2.0"
+  },
+  "peerDependenciesMeta": {
+    "adapt-authoring-auth": {
+      "optional": true
+    },
+    "adapt-authoring-jsonschema": {
+      "optional": true
+    },
+    "adapt-authoring-mongodb": {
+      "optional": true
+    },
+    "adapt-authoring-server": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",

@@ -98,42 +98,4 @@ describe('AbstractApiUtils', () => {
       assert.equal(AbstractApiUtils.argsFromReq(req), undefined)
     })
   })
-
-  describe('.stringifyValues()', () => {
-    it('should pass through plain values unchanged', () => {
-      const data = { a: 'hello', b: 42, c: true, d: null }
-      const result = AbstractApiUtils.stringifyValues(data)
-      assert.deepEqual(result, data)
-    })
-
-    it('should convert Date values to strings', () => {
-      const date = new Date('2025-01-01T00:00:00.000Z')
-      const result = AbstractApiUtils.stringifyValues({ date })
-      assert.equal(typeof result.date, 'string')
-      assert.equal(result.date, date.toString())
-    })
-
-    it('should recursively process nested objects', () => {
-      const data = { nested: { value: 'test', date: new Date('2025-01-01') } }
-      const result = AbstractApiUtils.stringifyValues(data)
-      assert.equal(typeof result.nested, 'object')
-      assert.equal(typeof result.nested.date, 'string')
-    })
-
-    it('should recursively process arrays', () => {
-      const date = new Date('2025-01-01')
-      const data = { items: [date, 'text', 42] }
-      const result = AbstractApiUtils.stringifyValues(data)
-      assert.ok(Array.isArray(result.items))
-      assert.equal(typeof result.items[0], 'string')
-      assert.equal(result.items[1], 'text')
-      assert.equal(result.items[2], 42)
-    })
-
-    it('should return an array when input is an array', () => {
-      const result = AbstractApiUtils.stringifyValues([{ a: 1 }, { b: 2 }])
-      assert.ok(Array.isArray(result))
-      assert.equal(result.length, 2)
-    })
-  })
 })

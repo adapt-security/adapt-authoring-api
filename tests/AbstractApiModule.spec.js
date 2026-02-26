@@ -72,9 +72,9 @@ describe('AbstractApiModule', () => {
   })
 
   describe('#_applyRouteConfig()', () => {
-    it('should set root, schemaName, and collectionName from config', () => {
+    it('should set root, schemaName, and collectionName from config', async () => {
       const instance = createInstance()
-      instance._applyRouteConfig({
+      await instance._applyRouteConfig({
         root: 'content',
         schemaName: 'content',
         collectionName: 'content',
@@ -86,25 +86,25 @@ describe('AbstractApiModule', () => {
       assert.equal(instance.collectionName, 'content')
     })
 
-    it('should not override schemaName or collectionName when not in config', () => {
+    it('should not override schemaName or collectionName when not in config', async () => {
       const instance = createInstance({ schemaName: 'existing', collectionName: 'existing' })
-      instance._applyRouteConfig({ root: 'content', useDefaultRoutes: false, routes: [] })
+      await instance._applyRouteConfig({ root: 'content', useDefaultRoutes: false, routes: [] })
       assert.equal(instance.schemaName, 'existing')
       assert.equal(instance.collectionName, 'existing')
     })
 
-    it('should set routes to custom routes only when useDefaultRoutes is false', () => {
+    it('should set routes to custom routes only when useDefaultRoutes is false', async () => {
       const instance = createInstance()
       const customRoute = { route: '/custom', handlers: { get: () => {} } }
-      instance._applyRouteConfig({ root: 'test', useDefaultRoutes: false, routes: [customRoute] })
+      await instance._applyRouteConfig({ root: 'test', useDefaultRoutes: false, routes: [customRoute] })
       assert.equal(instance.routes.length, 1)
       assert.equal(instance.routes[0].route, '/custom')
     })
 
-    it('should prepend default CRUD routes when useDefaultRoutes is true', () => {
+    it('should prepend default CRUD routes when useDefaultRoutes is true', async () => {
       const instance = createInstance()
       const customRoute = { route: '/custom', handlers: { get: () => {} } }
-      instance._applyRouteConfig({ root: 'test', useDefaultRoutes: true, routes: [customRoute] })
+      await instance._applyRouteConfig({ root: 'test', useDefaultRoutes: true, routes: [customRoute] })
       assert.ok(instance.routes.length > 1)
       assert.equal(instance.routes[instance.routes.length - 1].route, '/custom')
       const routes = instance.routes.map(r => r.route)
@@ -114,33 +114,33 @@ describe('AbstractApiModule', () => {
       assert.ok(routes.includes('/schema'))
     })
 
-    it('should prepend default CRUD routes when useDefaultRoutes is not specified', () => {
+    it('should prepend default CRUD routes when useDefaultRoutes is not specified', async () => {
       const instance = createInstance()
-      instance._applyRouteConfig({ root: 'test', routes: [] })
+      await instance._applyRouteConfig({ root: 'test', routes: [] })
       assert.ok(instance.routes.length > 0)
       const routes = instance.routes.map(r => r.route)
       assert.ok(routes.includes('/'))
       assert.ok(routes.includes('/:_id'))
     })
 
-    it('should use empty array when routes is not in config', () => {
+    it('should use empty array when routes is not in config', async () => {
       const instance = createInstance()
-      instance._applyRouteConfig({ root: 'test', useDefaultRoutes: false })
+      await instance._applyRouteConfig({ root: 'test', useDefaultRoutes: false })
       assert.deepEqual(instance.routes, [])
     })
   })
 
   describe('#_getDefaultRoutes()', () => {
-    it('should return an array of route objects', () => {
+    it('should return an array of route objects', async () => {
       const instance = createInstance()
-      const routes = instance._getDefaultRoutes()
+      const routes = await instance._getDefaultRoutes()
       assert.ok(Array.isArray(routes))
       assert.ok(routes.length > 0)
     })
 
-    it('should include routes for /, /schema, /:_id, and /query', () => {
+    it('should include routes for /, /schema, /:_id, and /query', async () => {
       const instance = createInstance()
-      const routes = instance._getDefaultRoutes()
+      const routes = await instance._getDefaultRoutes()
       const routePaths = routes.map(r => r.route)
       assert.ok(routePaths.includes('/'))
       assert.ok(routePaths.includes('/schema'))
@@ -148,25 +148,25 @@ describe('AbstractApiModule', () => {
       assert.ok(routePaths.includes('/query'))
     })
 
-    it('should use permissionsScope when set', () => {
+    it('should use permissionsScope when set', async () => {
       const instance = createInstance({ root: 'content', permissionsScope: 'custom' })
-      const routes = instance._getDefaultRoutes()
+      const routes = await instance._getDefaultRoutes()
       const rootRoute = routes.find(r => r.route === '/')
       assert.ok(rootRoute.permissions.post.includes('write:custom'))
       assert.ok(rootRoute.permissions.get.includes('read:custom'))
     })
 
-    it('should fall back to root for permissions when permissionsScope is not set', () => {
+    it('should fall back to root for permissions when permissionsScope is not set', async () => {
       const instance = createInstance({ root: 'content', permissionsScope: undefined })
-      const routes = instance._getDefaultRoutes()
+      const routes = await instance._getDefaultRoutes()
       const rootRoute = routes.find(r => r.route === '/')
       assert.ok(rootRoute.permissions.post.includes('write:content'))
       assert.ok(rootRoute.permissions.get.includes('read:content'))
     })
 
-    it('should set validate: false and modifying: false on /query route', () => {
+    it('should set validate: false and modifying: false on /query route', async () => {
       const instance = createInstance()
-      const routes = instance._getDefaultRoutes()
+      const routes = await instance._getDefaultRoutes()
       const queryRoute = routes.find(r => r.route === '/query')
       assert.equal(queryRoute.validate, false)
       assert.equal(queryRoute.modifying, false)

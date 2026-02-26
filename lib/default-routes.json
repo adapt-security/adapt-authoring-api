@@ -2,7 +2,7 @@
   "routes": [
     {
       "route": "/",
-      "handlers": { "post": "default", "get": "default" },
+      "handlers": { "post": "requestHandler", "get": "queryHandler" },
       "permissions": { "post": ["write:${scope}"], "get": ["read:${scope}"] }
     },
     {
@@ -12,14 +12,14 @@
     },
     {
       "route": "/:_id",
-      "handlers": { "put": "default", "get": "default", "patch": "default", "delete": "default" },
+      "handlers": { "put": "requestHandler", "get": "requestHandler", "patch": "requestHandler", "delete": "requestHandler" },
       "permissions": { "put": ["write:${scope}"], "get": ["read:${scope}"], "patch": ["write:${scope}"], "delete": ["write:${scope}"] }
     },
     {
       "route": "/query",
       "validate": false,
       "modifying": false,
-      "handlers": { "post": "query" },
+      "handlers": { "post": "queryHandler" },
       "permissions": { "post": ["read:${scope}"] }
     }
   ]

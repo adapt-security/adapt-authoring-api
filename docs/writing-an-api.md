@@ -53,6 +53,8 @@ class NotesModule extends AbstractApiModule {
 export default NotesModule
 ```
 
+> **Tip:** For new modules, consider defining routes in a `routes.json` file instead of calling `useDefaultRouteConfig()`. See [Custom routes](#custom-routes) for details.
+
 With a schema at `schema/note.schema.json`:
 
 ```json

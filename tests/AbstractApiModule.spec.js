@@ -9,8 +9,8 @@ function createInstance (overrides = {}) {
   instance.schemaName = undefined
   instance.collectionName = undefined
   instance.routes = []
-  instance.requestHandler = () => function defaultRequestHandler () {}
-  instance.queryHandler = () => function queryHandler () {}
+  instance.requestHandler = function defaultRequestHandler () {}
+  instance.queryHandler = function queryHandler () {}
   instance.serveSchema = function serveSchema () {}
   Object.assign(instance, overrides)
   return instance

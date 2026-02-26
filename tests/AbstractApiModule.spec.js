@@ -107,21 +107,21 @@ describe('AbstractApiModule', () => {
       assert.deepEqual(instance.routes, [])
     })
 
-    it('should expand ${scope} placeholders in permissions using root', async () => {
+    it('should expand ${scope} placeholders in permissions using root', async () => { // eslint-disable-line no-template-curly-in-string
       const instance = createInstance({ root: 'content' })
       await instance.applyRouteConfig({
         root: 'content',
-        routes: [{ route: '/', permissions: { get: ['read:${scope}'], post: ['write:${scope}'] } }]
+        routes: [{ route: '/', permissions: { get: ['read:${scope}'], post: ['write:${scope}'] } }] // eslint-disable-line no-template-curly-in-string
       })
       assert.deepEqual(instance.routes[0].permissions.get, ['read:content'])
       assert.deepEqual(instance.routes[0].permissions.post, ['write:content'])
     })
 
-    it('should prefer permissionsScope over root for ${scope} expansion', async () => {
+    it('should prefer permissionsScope over root for ${scope} expansion', async () => { // eslint-disable-line no-template-curly-in-string
       const instance = createInstance({ root: 'content', permissionsScope: 'custom' })
       await instance.applyRouteConfig({
         root: 'content',
-        routes: [{ route: '/', permissions: { get: ['read:${scope}'] } }]
+        routes: [{ route: '/', permissions: { get: ['read:${scope}'] } }] // eslint-disable-line no-template-curly-in-string
       })
       assert.deepEqual(instance.routes[0].permissions.get, ['read:custom'])
     })

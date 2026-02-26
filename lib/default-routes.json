@@ -3,7 +3,7 @@
     {
       "route": "/",
       "handlers": { "post": "default", "get": "default" },
-      "permissions": { "post": ["write:{scope}"], "get": ["read:{scope}"] }
+      "permissions": { "post": ["write:${scope}"], "get": ["read:${scope}"] }
     },
     {
       "route": "/schema",
@@ -13,14 +13,14 @@
     {
       "route": "/:_id",
       "handlers": { "put": "default", "get": "default", "patch": "default", "delete": "default" },
-      "permissions": { "put": ["write:{scope}"], "get": ["read:{scope}"], "patch": ["write:{scope}"], "delete": ["write:{scope}"] }
+      "permissions": { "put": ["write:${scope}"], "get": ["read:${scope}"], "patch": ["write:${scope}"], "delete": ["write:${scope}"] }
     },
     {
       "route": "/query",
       "validate": false,
       "modifying": false,
       "handlers": { "post": "query" },
-      "permissions": { "post": ["read:{scope}"] }
+      "permissions": { "post": ["read:${scope}"] }
     }
   ]
 }

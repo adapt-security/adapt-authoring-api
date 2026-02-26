@@ -101,32 +101,38 @@ describe('AbstractApiModule', () => {
       assert.equal(instance.routes[0].route, '/custom')
     })
 
-    it('should prepend default CRUD routes when useDefaultRoutes is true', async () => {
-      const instance = createInstance()
-      const customRoute = { route: '/custom', handlers: { get: () => {} } }
-      await instance.applyRouteConfig({ root: 'test', useDefaultRoutes: true, routes: [customRoute] })
-      assert.ok(instance.routes.length > 1)
-      assert.equal(instance.routes[instance.routes.length - 1].route, '/custom')
-      const routes = instance.routes.map(r => r.route)
-      assert.ok(routes.includes('/'))
-      assert.ok(routes.includes('/:_id'))
-      assert.ok(routes.includes('/query'))
-      assert.ok(routes.includes('/schema'))
-    })
-
-    it('should prepend default CRUD routes when useDefaultRoutes is not specified', async () => {
+    it('should set routes to empty array when config has no routes', async () => {
       const instance = createInstance()
       await instance.applyRouteConfig({ root: 'test', routes: [] })
-      assert.ok(instance.routes.length > 0)
-      const routes = instance.routes.map(r => r.route)
-      assert.ok(routes.includes('/'))
-      assert.ok(routes.includes('/:_id'))
+      assert.deepEqual(instance.routes, [])
     })
 
-    it('should use empty array when routes is not in config', async () => {
-      const instance = createInstance()
-      await instance.applyRouteConfig({ root: 'test', useDefaultRoutes: false })
-      assert.deepEqual(instance.routes, [])
+    it('should expand ${scope} placeholders in permissions using root', async () => {
+      const instance = createInstance({ root: 'content' })
+      await instance.applyRouteConfig({
+        root: 'content',
+        routes: [{ route: '/', permissions: { get: ['read:${scope}'], post: ['write:${scope}'] } }]
+      })
+      assert.deepEqual(instance.routes[0].permissions.get, ['read:content'])
+      assert.deepEqual(instance.routes[0].permissions.post, ['write:content'])
+    })
+
+    it('should prefer permissionsScope over root for ${scope} expansion', async () => {
+      const instance = createInstance({ root: 'content', permissionsScope: 'custom' })
+      await instance.applyRouteConfig({
+        root: 'content',
+        routes: [{ route: '/', permissions: { get: ['read:${scope}'] } }]
+      })
+      assert.deepEqual(instance.routes[0].permissions.get, ['read:custom'])
+    })
+
+    it('should pass through null permissions unchanged', async () => {
+      const instance = createInstance({ root: 'content' })
+      await instance.applyRouteConfig({
+        root: 'content',
+        routes: [{ route: '/', permissions: { get: null } }]
+      })
+      assert.equal(instance.routes[0].permissions.get, null)
     })
   })
 

@@ -2,25 +2,147 @@
   "routes": [
     {
       "route": "/",
-      "handlers": { "post": "default", "get": "default" },
-      "permissions": { "post": ["write:${scope}"], "get": ["read:${scope}"] }
+      "handlers": { "post": "requestHandler", "get": "queryHandler" },
+      "permissions": { "post": ["write:${scope}"], "get": ["read:${scope}"] },
+      "meta": {
+        "post": {
+          "summary": "Insert a new ${schemaName} document",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/${schemaName}" }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "The created ${schemaName} document",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/${schemaName}" }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "summary": "Retrieve all ${collectionName} documents",
+          "parameters": [
+            { "name": "limit", "in": "query", "description": "How many results to return" },
+            { "name": "page", "in": "query", "description": "The page of results to return" }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of ${schemaName} documents",
+              "content": {
+                "application/json": {
+                  "schema": { "type": "array", "items": { "$ref": "#/components/schemas/${schemaName}" } }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "route": "/schema",
       "handlers": { "get": "serveSchema" },
-      "permissions": { "get": ["read:schema"] }
+      "permissions": { "get": ["read:schema"] },
+      "meta": {
+        "get": { "summary": "Retrieve ${schemaName} schema" }
+      }
     },
     {
       "route": "/:_id",
-      "handlers": { "put": "default", "get": "default", "patch": "default", "delete": "default" },
-      "permissions": { "put": ["write:${scope}"], "get": ["read:${scope}"], "patch": ["write:${scope}"], "delete": ["write:${scope}"] }
+      "handlers": { "put": "requestHandler", "get": "requestHandler", "patch": "requestHandler", "delete": "requestHandler" },
+      "permissions": { "put": ["write:${scope}"], "get": ["read:${scope}"], "patch": ["write:${scope}"], "delete": ["write:${scope}"] },
+      "meta": {
+        "put": {
+          "summary": "Replace an existing ${schemaName} document",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/${schemaName}" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "The updated ${schemaName} document",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/${schemaName}" }
+                }
+              }
+            }
+          }
+        },
+        "get": {
+          "summary": "Retrieve an existing ${schemaName} document",
+          "responses": {
+            "200": {
+              "description": "The ${schemaName} document",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/${schemaName}" }
+                }
+              }
+            }
+          }
+        },
+        "patch": {
+          "summary": "Update an existing ${schemaName} document",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/${schemaName}" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "The updated ${schemaName} document",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/${schemaName}" }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete an existing ${schemaName} document",
+          "responses": {
+            "204": { "description": "Document deleted successfully" }
+          }
+        }
+      }
     },
     {
       "route": "/query",
       "validate": false,
       "modifying": false,
-      "handlers": { "post": "query" },
-      "permissions": { "post": ["read:${scope}"] }
+      "handlers": { "post": "queryHandler" },
+      "permissions": { "post": ["read:${scope}"] },
+      "meta": {
+        "post": {
+          "summary": "Query all ${collectionName}",
+          "parameters": [
+            { "name": "limit", "in": "query", "description": "How many results to return" },
+            { "name": "page", "in": "query", "description": "The page of results to return" }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of ${schemaName} documents",
+              "content": {
+                "application/json": {
+                  "schema": { "type": "array", "items": { "$ref": "#/components/schemas/${schemaName}" } }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

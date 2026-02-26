@@ -19,7 +19,7 @@
         },
         "routes": {
           "type": "array",
-          "items": { "$ref": "apirouteitem" }
+          "items": { "$ref": "routeitem" }
         }
       }
     }

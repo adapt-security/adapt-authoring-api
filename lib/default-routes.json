@@ -7,7 +7,8 @@
     },
     {
       "route": "/schema",
-      "handlers": { "get": "serveSchema" }
+      "handlers": { "get": "serveSchema" },
+      "permissions": { "get": ["read:schema"] }
     },
     {
       "route": "/:_id",

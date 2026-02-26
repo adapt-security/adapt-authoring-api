@@ -1,0 +1,27 @@
+{
+  "$anchor": "apiroutes",
+  "$merge": {
+    "source": { "$ref": "routes" },
+    "with": {
+      "properties": {
+        "schemaName": {
+          "type": "string",
+          "description": "Schema name for the module's data model"
+        },
+        "collectionName": {
+          "type": "string",
+          "description": "MongoDB collection name"
+        },
+        "useDefaultRoutes": {
+          "type": "boolean",
+          "description": "Whether to generate default CRUD routes",
+          "default": true
+        },
+        "routes": {
+          "type": "array",
+          "items": { "$ref": "apirouteitem" }
+        }
+      }
+    }
+  }
+}

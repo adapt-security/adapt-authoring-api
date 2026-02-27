@@ -1,6 +1,12 @@
-import { describe, it } from 'node:test'
+import { before, describe, it } from 'node:test'
 import assert from 'node:assert/strict'
+import { readJson } from 'adapt-authoring-core'
 import AbstractApiModule from '../lib/AbstractApiModule.js'
+
+let defaultRoutes
+before(async () => {
+  defaultRoutes = await readJson(`${import.meta.dirname}/../default-routes.json`)
+})
 
 function createInstance (overrides = {}) {
   const instance = Object.create(AbstractApiModule.prototype)
@@ -136,44 +142,40 @@ describe('AbstractApiModule', () => {
     })
   })
 
-  describe('#DEFAULT_ROUTES', () => {
-    it('should return an array of route objects', async () => {
-      const instance = createInstance()
-      const routes = await instance.DEFAULT_ROUTES
-      assert.ok(Array.isArray(routes))
-      assert.ok(routes.length > 0)
+  describe('default-routes.json', () => {
+    it('should define an array of route objects', () => {
+      assert.ok(Array.isArray(defaultRoutes.routes))
+      assert.ok(defaultRoutes.routes.length > 0)
     })
 
-    it('should include routes for /, /schema, /:_id, and /query', async () => {
-      const instance = createInstance()
-      const routes = await instance.DEFAULT_ROUTES
-      const routePaths = routes.map(r => r.route)
+    it('should include routes for /, /schema, /:_id, and /query', () => {
+      const routePaths = defaultRoutes.routes.map(r => r.route)
       assert.ok(routePaths.includes('/'))
       assert.ok(routePaths.includes('/schema'))
       assert.ok(routePaths.includes('/:_id'))
       assert.ok(routePaths.includes('/query'))
     })
 
-    it('should use permissionsScope when set', async () => {
+    it('should use permissionsScope when set', () => {
       const instance = createInstance({ root: 'content', permissionsScope: 'custom' })
-      const routes = await instance.DEFAULT_ROUTES
-      const rootRoute = routes.find(r => r.route === '/')
+      instance.applyRouteConfig({ root: 'content', permissionsScope: 'custom', routes: defaultRoutes.routes })
+      const rootRoute = instance.routes.find(r => r.route === '/')
       assert.ok(rootRoute.permissions.post.includes('write:custom'))
       assert.ok(rootRoute.permissions.get.includes('read:custom'))
     })
 
-    it('should fall back to root for permissions when permissionsScope is not set', async () => {
+    it('should fall back to root for permissions when permissionsScope is not set', () => {
       const instance = createInstance({ root: 'content', permissionsScope: undefined })
-      const routes = await instance.DEFAULT_ROUTES
-      const rootRoute = routes.find(r => r.route === '/')
+      instance.applyRouteConfig({ root: 'content', routes: defaultRoutes.routes })
+      const rootRoute = instance.routes.find(r => r.route === '/')
       assert.ok(rootRoute.permissions.post.includes('write:content'))
       assert.ok(rootRoute.permissions.get.includes('read:content'))
     })
 
-    it('should set validate: false and modifying: false on /query route', async () => {
+    it('should set validate: false and modifying: false on /query route', () => {
       const instance = createInstance()
-      const routes = await instance.DEFAULT_ROUTES
-      const queryRoute = routes.find(r => r.route === '/query')
+      instance.applyRouteConfig({ root: 'test', routes: defaultRoutes.routes })
+      const queryRoute = instance.routes.find(r => r.route === '/query')
       assert.equal(queryRoute.validate, false)
       assert.equal(queryRoute.modifying, false)
     })

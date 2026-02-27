@@ -43,19 +43,24 @@ import AbstractApiModule from 'adapt-authoring-api'
 
 class NotesModule extends AbstractApiModule {
   async setValues () {
-    this.root = 'notes'
+    await super.setValues()
     this.collectionName = 'notes'
     this.schemaName = 'note'
-    this.useDefaultRouteConfig()
   }
 }
 
 export default NotesModule
 ```
 
-> **Tip:** For new modules, consider defining routes in a `routes.json` file instead of calling `useDefaultRouteConfig()`. See [Custom routes](#custom-routes) for details.
+With a `routes.json` in the module root:
 
-With a schema at `schema/note.schema.json`:
+```json
+{
+  "root": "notes"
+}
+```
+
+And a schema at `schema/note.schema.json`:
 
 ```json
 {
@@ -93,84 +98,84 @@ This creates the following endpoints:
 
 ### Required values
 
-Override `setValues()` to configure your module:
+Override `setValues()` to configure your module. Always call `await super.setValues()` first — this loads route configuration from `routes.json` (if present) and applies the default CRUD routes.
 
 ```javascript
 async setValues () {
-  this.root = 'notes'           // URL path: /api/notes
+  await super.setValues()
   this.collectionName = 'notes' // MongoDB collection name
   this.schemaName = 'note'      // Default schema for validation
-  this.useDefaultRouteConfig()  // Use standard CRUD routes
 }
 ```
 
 | Property | Type | Required | Description |
 | -------- | ---- | -------- | ----------- |
-| `root` | String | Yes* | URL path for the API (e.g., `notes` → `/api/notes`) |
+| `root` | String | Yes* | URL path for the API (e.g., `notes` → `/api/notes`). Set via `routes.json`. |
 | `router` | Router | Yes* | Router instance (created automatically if `root` is set) |
-| `routes` | Array | Yes | Route definitions |
+| `routes` | Array | Yes | Route definitions. Loaded from `routes.json` and `default-routes.json`. |
 | `collectionName` | String | Yes | MongoDB collection name |
 | `schemaName` | String | No | Default schema name for validation |
-| `permissionsScope` | String | No | Override the scope used for permissions (defaults to `root`) |
+| `permissionsScope` | String | No | Override the scope used for permissions (defaults to `root`). Can be set in `routes.json`. |
 
 *Either `root` or `router` must be set.
 
-### Using default routes
+### Route configuration with routes.json
 
-Call `useDefaultRouteConfig()` to use the standard CRUD routes:
+Create a `routes.json` file in your module's root directory. At minimum, you need to specify the `root` path:
 
-```javascript
-async setValues () {
-  this.root = 'notes'
-  this.collectionName = 'notes'
-  this.schemaName = 'note'
-  this.useDefaultRouteConfig()
+```json
+{
+  "root": "notes"
 }
 ```
 
-The default routes are:
+When `super.setValues()` is called, this file is loaded and merged with the default CRUD routes from `default-routes.json`. The default routes provide:
 
-```javascript
-[
-  {
-    route: '/',
-    handlers: { post: handler, get: queryHandler },
-    permissions: { post: ['write:notes'], get: ['read:notes'] }
-  },
-  {
-    route: '/schema',
-    handlers: { get: serveSchema },
-    permissions: { get: ['read:schema'] }
-  },
-  {
-    route: '/:_id',
-    handlers: { put: handler, get: handler, patch: handler, delete: handler },
-    permissions: { put: ['write:notes'], get: ['read:notes'], patch: ['write:notes'], delete: ['write:notes'] }
-  },
-  {
-    route: '/query',
-    validate: false,
-    modifying: false,
-    handlers: { post: queryHandler },
-    permissions: { post: ['read:notes'] }
-  }
-]
-```
+| Method | Route | Handler | Permissions |
+| ------ | ----- | ------- | ----------- |
+| POST | `/` | `requestHandler` | `write:${scope}` |
+| GET | `/` | `queryHandler` | `read:${scope}` |
+| GET | `/schema` | `serveSchema` | `read:schema` |
+| PUT | `/:_id` | `requestHandler` | `write:${scope}` |
+| GET | `/:_id` | `requestHandler` | `read:${scope}` |
+| PATCH | `/:_id` | `requestHandler` | `write:${scope}` |
+| DELETE | `/:_id` | `requestHandler` | `write:${scope}` |
+| POST | `/query` | `queryHandler` | `read:${scope}` |
+
+The `${scope}` placeholder is replaced with `permissionsScope` (if set) or `root`.
 
 ## Custom routes
 
-You can define custom routes by setting `this.routes` directly, or by adding to the default routes:
+Custom routes are defined in your module's `routes.json` file alongside the default CRUD routes.
 
-### Adding routes to the defaults
+### Adding routes via routes.json
+
+Add a `routes` array to your `routes.json`. These are merged with the default CRUD routes:
+
+```json
+{
+  "root": "notes",
+  "routes": [
+    {
+      "route": "/archive/:_id",
+      "handlers": { "post": "archiveHandler" },
+      "permissions": { "post": ["write:${scope}"] }
+    }
+  ]
+}
+```
+
+Handler values are method names on your module class — they are resolved automatically.
+
+### Adding routes programmatically
+
+You can also add routes in `setValues()` after calling `super.setValues()`:
 
 ```javascript
 async setValues () {
-  this.root = 'notes'
+  await super.setValues()
   this.collectionName = 'notes'
   this.schemaName = 'note'
-  // initialise the defaults routes
-  this.useDefaultRouteConfig()
-  // Add custom route
   this.routes.push({
     route: '/archive/:_id',
     handlers: { post: this.archiveHandler.bind(this) },
@@ -181,12 +186,13 @@ async setValues () {
 
 ### Fully custom routes
 
+To bypass the default CRUD routes entirely, override `this.routes` after `super.setValues()`:
+
 ```javascript
 async setValues () {
-  this.root = 'notes'
+  await super.setValues()
   this.collectionName = 'notes'
   this.schemaName = 'note'
-  // here we define our own completely custom list of routes, with no call to this.useDefaultRouteConfig
   this.routes = [
     {
       route: '/',
@@ -415,13 +421,21 @@ Routes are secured using permission scopes. The default routes use `read:<root>`
 
 ### Custom permission scope
 
-Set `permissionsScope` to use a different scope:
+Set `permissionsScope` in your `routes.json` or in `setValues()`:
+
+```json
+{
+  "root": "notes",
+  "permissionsScope": "content"
+}
+```
+
+Or programmatically:
 
 ```javascript
 async setValues () {
-  this.root = 'notes'
+  await super.setValues()
   this.permissionsScope = 'content'  // Uses read:content, write:content
-  this.useDefaultRouteConfig()
 }
 ```
 

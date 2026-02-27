@@ -17,10 +17,6 @@
           "type": "boolean",
           "description": "Whether to generate default CRUD routes",
           "default": true
-        },
-        "routes": {
-          "type": "array",
-          "items": { "$ref": "routeitem" }
         }
       }
     }

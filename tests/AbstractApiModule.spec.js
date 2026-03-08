@@ -142,6 +142,56 @@ describe('AbstractApiModule', () => {
     })
   })
 
+  describe('#findOne()', () => {
+    function createFindOneInstance (findResults) {
+      const notFoundError = { setData: () => { const e = new Error('NOT_FOUND'); e.code = 'NOT_FOUND'; return e } }
+      const tooManyResultsError = { setData: () => { const e = new Error('TOO_MANY_RESULTS'); e.code = 'TOO_MANY_RESULTS'; return e } }
+      const instance = Object.create(AbstractApiModule.prototype)
+      instance.find = async () => findResults
+      instance.app = { errors: { NOT_FOUND: notFoundError, TOO_MANY_RESULTS: tooManyResultsError } }
+      return instance
+    }
+
+    it('should throw NOT_FOUND when no results and throwOnMissing is not set', async () => {
+      const instance = createFindOneInstance([])
+      await assert.rejects(() => instance.findOne({}), /NOT_FOUND/)
+    })
+
+    it('should throw NOT_FOUND when no results and throwOnMissing is true', async () => {
+      const instance = createFindOneInstance([])
+      await assert.rejects(() => instance.findOne({}, { throwOnMissing: true }), /NOT_FOUND/)
+    })
+
+    it('should return null when no results and throwOnMissing is false', async () => {
+      const instance = createFindOneInstance([])
+      const result = await instance.findOne({}, { throwOnMissing: false })
+      assert.equal(result, null)
+    })
+
+    it('should return null when no results and strict is false (backward compat)', async () => {
+      const instance = createFindOneInstance([])
+      const result = await instance.findOne({}, { strict: false })
+      assert.equal(result, null)
+    })
+
+    it('should prefer throwOnMissing over strict when both are set', async () => {
+      const instance = createFindOneInstance([])
+      await assert.rejects(() => instance.findOne({}, { throwOnMissing: true, strict: false }), /NOT_FOUND/)
+    })
+
+    it('should return the single result when found', async () => {
+      const doc = { _id: '1', name: 'test' }
+      const instance = createFindOneInstance([doc])
+      const result = await instance.findOne({})
+      assert.deepEqual(result, doc)
+    })
+
+    it('should throw TOO_MANY_RESULTS when more than one result is returned', async () => {
+      const instance = createFindOneInstance([{ _id: '1' }, { _id: '2' }])
+      await assert.rejects(() => instance.findOne({}), /TOO_MANY_RESULTS/)
+    })
+  })
+
   describe('default-routes.json', () => {
     it('should define an array of route objects', () => {
       assert.ok(Array.isArray(defaultRoutes.routes))

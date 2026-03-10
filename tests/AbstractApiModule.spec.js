@@ -230,4 +230,69 @@ describe('AbstractApiModule', () => {
       assert.equal(queryRoute.modifying, false)
     })
   })
+
+  describe('#setUpPagination()', () => {
+    function createPaginationInstance (docCount = 0, config = {}) {
+      const headers = {}
+      const instance = createInstance({
+        getConfig: (key) => config[key],
+        app: {
+          config: {
+            get: (key) => {
+              const defaults = { 'adapt-authoring-api.defaultPageSize': 100, 'adapt-authoring-api.maxPageSize': 250 }
+              return defaults[key]
+            }
+          },
+          waitForModule: async () => ({
+            getCollection: () => ({
+              countDocuments: async () => docCount
+            })
+          })
+        }
+      })
+      const req = { originalUrl: '/api/content/query', query: {}, apiData: { collectionName: 'content', query: {} } }
+      const res = { set: (k, v) => { headers[k] = v } }
+      return { instance, req, res, headers }
+    }
+
+    it('should skip pagination when limit is 0', async () => {
+      const { instance, req, res, headers } = createPaginationInstance(500)
+      const mongoOpts = { limit: 0 }
+      await instance.setUpPagination(req, res, mongoOpts)
+      assert.equal(mongoOpts.limit, undefined)
+      assert.equal(headers['X-Adapt-Page'], undefined)
+      assert.equal(headers['X-Adapt-PageSize'], undefined)
+    })
+
+    it('should apply default pagination when limit is not 0', async () => {
+      const { instance, req, res, headers } = createPaginationInstance(50)
+      const mongoOpts = {}
+      await instance.setUpPagination(req, res, mongoOpts)
+      assert.equal(mongoOpts.limit, 100)
+      assert.equal(headers['X-Adapt-Page'], 1)
+      assert.equal(headers['X-Adapt-PageSize'], 100)
+    })
+
+    it('should set Link header when results span multiple pages', async () => {
+      const { instance, req, res, headers } = createPaginationInstance(250)
+      const mongoOpts = {}
+      await instance.setUpPagination(req, res, mongoOpts)
+      assert.ok(headers.Link)
+      assert.ok(headers.Link.includes('rel="next"'))
+    })
+
+    it('should not set Link header for single-page results', async () => {
+      const { instance, req, res, headers } = createPaginationInstance(50)
+      const mongoOpts = {}
+      await instance.setUpPagination(req, res, mongoOpts)
+      assert.equal(headers.Link, undefined)
+    })
+
+    it('should cap pageSize at maxPageSize', async () => {
+      const { instance, req, res, headers } = createPaginationInstance(500)
+      const mongoOpts = { limit: 999 }
+      await instance.setUpPagination(req, res, mongoOpts)
+      assert.equal(headers['X-Adapt-PageSize'], 250)
+    })
+  })
 })

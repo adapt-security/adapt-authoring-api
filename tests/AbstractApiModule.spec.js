@@ -234,6 +234,7 @@ describe('AbstractApiModule', () => {
   describe('#setUpPagination()', () => {
     function createPaginationInstance (docCount = 0, config = {}) {
       const headers = {}
+      const countCalls = []
       const instance = createInstance({
         getConfig: (key) => config[key],
         app: {
@@ -244,15 +245,16 @@ describe('AbstractApiModule', () => {
             }
           },
           waitForModule: async () => ({
-            getCollection: () => ({
-              countDocuments: async () => docCount
-            })
+            count: async (collectionName, query) => {
+              countCalls.push({ collectionName, query })
+              return docCount
+            }
           })
         }
       })
       const req = { originalUrl: '/api/content/query', query: {}, apiData: { collectionName: 'content', query: {} } }
       const res = { set: (k, v) => { headers[k] = v } }
-      return { instance, req, res, headers }
+      return { instance, req, res, headers, countCalls }
     }
 
     it('should skip pagination when limit is 0', async () => {
@@ -293,6 +295,15 @@ describe('AbstractApiModule', () => {
       const mongoOpts = { limit: 999 }
       await instance.setUpPagination(req, res, mongoOpts)
       assert.equal(headers['X-Adapt-PageSize'], 250)
+    })
+
+    it('should count using the collection name and access-filtered query', async () => {
+      const { instance, req, res, countCalls } = createPaginationInstance(50)
+      req.apiData.query = { $or: [{ createdBy: '507f1f77bcf86cd799439011' }] }
+      await instance.setUpPagination(req, res, {})
+      assert.equal(countCalls.length, 1)
+      assert.equal(countCalls[0].collectionName, 'content')
+      assert.deepEqual(countCalls[0].query, req.apiData.query)
     })
   })
 })

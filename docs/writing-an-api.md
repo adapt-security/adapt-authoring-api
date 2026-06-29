@@ -341,7 +341,9 @@ See the table below for a list of hooks provided by the `AbstractApiModule` clas
 | `postUpdateHook` | After updating a document | No |
 | `preDeleteHook` | Before deleting a document | No |
 | `postDeleteHook` | After deleting a document | No |
-| `accessCheckHook` | When checking access to a resource | No |
+| `accessCheckHook` | Per-item access check (single-document reads) | No |
+| `accessQueryHook` | Merges access-control clauses into a list query (skipped for super users) | No |
+| `queryHook` | Merges user-driven filter clauses into a list query (runs for all users) | Yes |
 
 ### Using hooks
 
@@ -374,16 +376,30 @@ class NotesModule extends AbstractApiModule {
 }
 ```
 
-### Access control with accessCheckHook
+### Access control
 
-Use `accessCheckHook` to implement custom access control:
+Access is an **additive grant model**: observers widen access, they don't restrict it. Both access hooks are OR-combined across all observers, so any one observer granting access is sufficient.
+
+- `accessQueryHook` — the primary gate. Merge a clause into `req.apiData.query` so the database only returns documents the user can see. Filtering here (rather than after the query) keeps pagination counts and the `Link` header accurate. Skipped for super users.
+- `accessCheckHook` — the per-item safety net for single-document reads. Return `true` to grant, a non-truthy value to abstain, or `throw` to hard-veto the item (a veto denies regardless of other grants — this is how a restriction is expressed).
 
 ```javascript
-this.accessCheckHook.tap(async (req, doc) => {
-  // Return true to allow access, false or undefined to deny
-  return doc.createdBy === req.auth.user._id.toString()
-})
+this.accessCheckHook.tap((req, doc) => doc.createdBy === req.auth.user._id.toString())
+this.accessQueryHook.tap(req => addAccessClause(req.apiData.query, { createdBy: req.auth.user._id.toString() }))
 ```
+
+#### The generic `_access` mechanism
+
+Call `enableAccessControl()` in your module's `init()` to opt into a shared, extensible `_access` object. This extends the module schema with `_access.public` and registers a `public` grant on both hooks:
+
+```javascript
+async init () {
+  await super.init()
+  await this.enableAccessControl()
+}
+```
+
+Other modules extend `_access` with their own keys (e.g. `_access.users`, `_access.groups`) and tap both hooks with additional grants, all OR-combined with the base `public` grant. Use `addAccessClause` (exported from `adapt-authoring-api`) for the query-level grant so observers compose safely with each other and with any user-driven `$or`.
 
 ## Overriding methods
 

@@ -7,12 +7,12 @@
       "properties": {
         "_access": {
           "type": "object",
-          "default": {},
+          "default": { "public": true },
           "properties": {
             "public": {
               "description": "Whether the resource is accessible to all users",
               "type": "boolean",
-              "default": false
+              "default": true
             }
           }
         }

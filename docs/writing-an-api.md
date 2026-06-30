@@ -401,6 +401,10 @@ async init () {
 
 Other modules extend `_access` with their own keys (e.g. `_access.users`, `_access.groups`) and tap both hooks with additional grants, all OR-combined with the base `public` grant. Use `addAccessClause` (exported from `adapt-authoring-api`) for the query-level grant so observers compose safely with each other and with any user-driven `$or`.
 
+`_access.public` defaults to `true` — resources are public unless a grant or the creating UI sets it otherwise. This preserves open access for resource types without a sharing UI; clients that scope access (e.g. the course wizard) set the value explicitly.
+
+Enforcement is request-scoped: both hooks read `req.auth`/`req.apiData.query`, so `_access` is only applied to REST API requests. Internal/programmatic data access (e.g. server-side `find()`, preview, publish, export) bypasses it by design — there is no request identity to check against outside a REST request.
+
 ## Overriding methods
 
 You can override database methods to customise behaviour:

@@ -198,12 +198,13 @@ describe('AbstractApiModule', () => {
       assert.ok(defaultRoutes.routes.length > 0)
     })
 
-    it('should include routes for /, /schema, /:_id, and /query', () => {
+    it('should include routes for /, /schema, /:_id, /query, and /validate', () => {
       const routePaths = defaultRoutes.routes.map(r => r.route)
       assert.ok(routePaths.includes('/'))
       assert.ok(routePaths.includes('/schema'))
       assert.ok(routePaths.includes('/:_id'))
       assert.ok(routePaths.includes('/query'))
+      assert.ok(routePaths.includes('/validate'))
     })
 
     it('should use permissionsScope when set', () => {
@@ -228,6 +229,57 @@ describe('AbstractApiModule', () => {
       const queryRoute = instance.routes.find(r => r.route === '/query')
       assert.equal(queryRoute.validate, false)
       assert.equal(queryRoute.modifying, false)
+    })
+
+    it('should set modifying: false and gate /validate on the write scope', () => {
+      const instance = createInstance({ root: 'content' })
+      instance.applyRouteConfig({ root: 'content', routes: defaultRoutes.routes })
+      const validateRoute = instance.routes.find(r => r.route === '/validate')
+      assert.equal(validateRoute.modifying, false)
+      assert.ok(validateRoute.permissions.post.includes('write:content'))
+    })
+  })
+
+  describe('#validateHandler()', () => {
+    function createValidateInstance (validate) {
+      const status = []
+      const json = []
+      const res = {
+        status (code) { status.push(code); return res },
+        json (data) { json.push(data); return res }
+      }
+      const instance = createInstance({
+        validate,
+        mapStatusCode: AbstractApiModule.prototype.mapStatusCode
+      })
+      return { instance, res, status, json }
+    }
+
+    it('should respond 200 with the validated data', async () => {
+      const validated = { _id: '1', title: 'valid' }
+      const calls = []
+      const { instance, res, status, json } = createValidateInstance(async (...args) => {
+        calls.push(args)
+        return validated
+      })
+      const req = { apiData: { schemaName: 'course', data: { title: 'valid' } } }
+      let nextErr = 'unset'
+      await instance.validateHandler(req, res, e => { nextErr = e })
+      assert.deepEqual(calls, [['course', { title: 'valid' }, {}]])
+      assert.deepEqual(status, [200])
+      assert.deepEqual(json, [validated])
+      assert.equal(nextErr, 'unset')
+    })
+
+    it('should forward a validation error to next and not respond', async () => {
+      const error = new Error('invalid')
+      const { instance, res, status, json } = createValidateInstance(async () => { throw error })
+      const req = { apiData: { schemaName: 'course', data: {} } }
+      let nextErr
+      await instance.validateHandler(req, res, e => { nextErr = e })
+      assert.equal(nextErr, error)
+      assert.equal(status.length, 0)
+      assert.equal(json.length, 0)
     })
   })
 

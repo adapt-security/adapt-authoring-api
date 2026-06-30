@@ -143,6 +143,34 @@
           }
         }
       }
+    },
+    {
+      "route": "/validate",
+      "modifying": false,
+      "handlers": { "post": "validateHandler" },
+      "permissions": { "post": ["write:${scope}"] },
+      "meta": {
+        "post": {
+          "summary": "Validate a ${schemaName} document without persisting it",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/${schemaName}" }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "The validated ${schemaName} document",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/${schemaName}" }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

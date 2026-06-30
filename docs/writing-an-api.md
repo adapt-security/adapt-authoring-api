@@ -93,6 +93,7 @@ This creates the following endpoints:
 | DELETE | `/api/notes/:_id` | Delete a note |
 | GET | `/api/notes/schema` | Get the JSON schema |
 | POST | `/api/notes/query` | Advanced query with pagination |
+| POST | `/api/notes/validate` | Validate a note without persisting it |
 
 ## Module configuration
 
@@ -141,6 +142,7 @@ When `super.setValues()` is called, this file is loaded and merged with the defa
 | PATCH | `/:_id` | `requestHandler` | `write:${scope}` |
 | DELETE | `/:_id` | `requestHandler` | `write:${scope}` |
 | POST | `/query` | `queryHandler` | `read:${scope}` |
+| POST | `/validate` | `validateHandler` | `write:${scope}` |
 
 The `${scope}` placeholder is replaced with `permissionsScope` (if set) or `root`.
 

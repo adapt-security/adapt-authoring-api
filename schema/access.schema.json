@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$anchor": "access",
+  "description": "Adds a generic access-control object that modules extend with their own grant keys",
+  "$merge": {
+    "with": {
+      "properties": {
+        "_access": {
+          "type": "object",
+          "default": {},
+          "properties": {
+            "public": {
+              "description": "Whether the resource is accessible to all users",
+              "type": "boolean",
+              "default": true
+            }
+          }
+        }
+      }
+    }
+  }
+}

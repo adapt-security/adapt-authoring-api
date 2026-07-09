@@ -407,7 +407,18 @@ Other modules extend `_access` with their own keys (e.g. `_access.users`, `_acce
 
 `_access.public` defaults to `true` — resources are public unless a grant or the creating UI sets it otherwise. This preserves open access for resource types without a sharing UI; clients that scope access (e.g. the course wizard) set the value explicitly.
 
-Enforcement is request-scoped: both hooks read `req.auth`/`req.apiData.query`, so `_access` is only applied to REST API requests. Internal/programmatic data access (e.g. server-side `find()`, preview, publish, export) bypasses it by design — there is no request identity to check against outside a REST request.
+#### Enforcement boundary — REST-only, by design
+
+`_access` enforcement runs **only on the REST API request layer**. `accessCheckHook` and `accessQueryHook` are request-scoped: they read `req.auth` and `req.apiData.query`. The following operate **outside** that pipeline and therefore bypass `_access` **by design** — this is a deliberate boundary, not a gap to fix:
+
+- preview, publish and export
+- server-side / programmatic `find()` and other internal data access
+
+There is no `req.auth` in the code-API context, so there is no identity to check access against; internal/build paths are gated by the coarse build scopes instead.
+
+**Why this is adequate:** the deployment model is single-client-per-instance, so `_access` is a **sharing** mechanism, not a security boundary — REST-only enforcement is sufficient for sharing.
+
+**When this must change:** if `_access` ever needs to be a true **security** boundary (e.g. multi-tenant isolation, where preview/export must not leak content across access boundaries), these paths must carry an identity and enforce access — which requires threading an auth/identity context into the code API. Revisit only under that requirement. Tracked in `adapt-authoring-api#109`.
 
 ## Overriding methods
 

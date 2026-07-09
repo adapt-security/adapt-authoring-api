@@ -8,6 +8,7 @@
         "_access": {
           "type": "object",
           "default": {},
+          "_adapt": { "inputType": "Access" },
           "properties": {
             "public": {
               "description": "Whether the resource is accessible to all users",

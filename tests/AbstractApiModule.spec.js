@@ -283,6 +283,75 @@ describe('AbstractApiModule', () => {
     })
   })
 
+  describe('#requestHandler()', () => {
+    function createHandlerInstance (overrides = {}) {
+      const instance = createInstance({
+        log: () => {},
+        requestHook: { invoke: async () => {} },
+        accessQueryHook: { invoke: async () => {} },
+        checkAccess: async (req, data) => data,
+        sanitise: async (schemaName, data) => data,
+        mapStatusCode: AbstractApiModule.prototype.mapStatusCode,
+        ...overrides
+      })
+      delete instance.requestHandler // expose the real prototype method (createInstance stubs it)
+      return instance
+    }
+    function makeRes () {
+      const json = []
+      const res = { status () { return res }, json (d) { json.push(d); return res } }
+      return { res, json }
+    }
+
+    it('checks access against the fetched document, not the query, for modifying requests', async () => {
+      const doc = { _id: 'a1', createdBy: 'u1' }
+      const order = []
+      let findOneQuery, checkedArg
+      const instance = createHandlerInstance({
+        requestHook: { invoke: async () => { order.push('requestHook') } },
+        accessQueryHook: { invoke: async () => { order.push('accessQuery') } },
+        findOne: async query => { order.push('findOne'); findOneQuery = query; return doc },
+        checkAccess: async (req, data) => { order.push('checkAccess'); checkedArg = data; return data },
+        update: async () => ({ _id: 'a1' })
+      })
+      const query = { _id: 'a1' }
+      const req = { method: 'PATCH', auth: { isSuper: false, user: { _id: 'u1' } }, params: { _id: 'a1' }, apiData: { query, data: {}, schemaName: 'test', collectionName: 'tests' } }
+      const { res } = makeRes()
+      await instance.requestHandler(req, res, e => { if (e) throw e })
+      assert.equal(checkedArg, doc) // the document, not the query object
+      assert.equal(findOneQuery, query) // fetched with the un-narrowed query
+      assert.deepEqual(order, ['requestHook', 'findOne', 'checkAccess', 'accessQuery'])
+    })
+
+    it('surfaces a missing target as NOT_FOUND before narrowing or writing', async () => {
+      const notFound = new Error('NOT_FOUND')
+      const ran = []
+      const instance = createHandlerInstance({
+        accessQueryHook: { invoke: async () => { ran.push('accessQuery') } },
+        findOne: async () => { throw notFound },
+        update: async () => { ran.push('update'); return {} }
+      })
+      const req = { method: 'PATCH', auth: { isSuper: false, user: { _id: 'u1' } }, params: { _id: 'gone' }, apiData: { query: { _id: 'gone' }, data: {}, schemaName: 'test', collectionName: 'tests' } }
+      const { res } = makeRes()
+      let nextErr
+      await instance.requestHandler(req, res, e => { nextErr = e })
+      assert.equal(nextErr, notFound)
+      assert.deepEqual(ran, [])
+    })
+
+    it('skips the per-item fetch for super users', async () => {
+      let fetched = false
+      const instance = createHandlerInstance({
+        findOne: async () => { fetched = true; return {} },
+        update: async () => ({ _id: 'a1' })
+      })
+      const req = { method: 'PATCH', auth: { isSuper: true, user: { _id: 'admin' } }, params: { _id: 'a1' }, apiData: { query: { _id: 'a1' }, data: {}, schemaName: 'test', collectionName: 'tests' } }
+      const { res } = makeRes()
+      await instance.requestHandler(req, res, e => { if (e) throw e })
+      assert.equal(fetched, false)
+    })
+  })
+
   describe('#setUpPagination()', () => {
     function createPaginationInstance (docCount = 0, config = {}) {
       const headers = {}
